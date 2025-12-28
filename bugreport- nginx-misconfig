@@ -1,0 +1,72 @@
+# Server-Side Security Vulnerability Disclosure  
+## Nginx Information Disclosure via Version Exposure and Default Configuration
+
+---
+
+## Title
+
+Nginx Information Disclosure via Server Version Exposure and Default Welcome Page
+
+---
+
+## Observation
+
+### 1) Nginx Version Disclosure
+
+The endpoint below returns an HTTP error page that explicitly discloses the underlying Nginx version:
+
+- **URL:** https://aixflap-admin.aixblock.io/xyz  
+- **Response:**
+404 Not Found
+nginx/1.26.3
+
+# Screenshot:
+
+
+
+The server banner reveals the exact Nginx version in use.
+
+---
+
+### 2) Default Nginx Welcome Page Exposed
+
+The following domain serves the default Nginx welcome page:
+
+- **URL:** https://rt.aixblock.io/
+
+
+
+The presence of the default page indicates that the web server is running with a default or incomplete configuration and may not be hardened for production use.
+
+---
+
+## Impact
+
+While neither issue alone results in direct compromise, together they contribute to **information disclosure** and **attack surface reconnaissance**, including:
+
+- Precise identification of the web server and its version, enabling attackers to:
+- Correlate known vulnerabilities
+- Target version-specific exploits or misconfigurations
+- Confirmation of default or weak server configuration, which may indicate:
+- Missing hardening controls
+- Additional exposed endpoints
+- Increased likelihood of misconfiguration-related vulnerabilities
+
+These findings lower the overall security posture and may significantly aid attackers when chained with other vulnerabilities.
+
+---
+
+## Remediation
+
+- Disable server version disclosure by updating the Nginx configuration:
+- Set `server_tokens off;`
+- Replace or remove the default Nginx welcome page on production-facing domains.
+- Ensure all public-facing Nginx instances are:
+- Properly hardened
+- Running only necessary routes
+- Reviewed for unintended default configurations
+- Perform a broader review of web server headers and error pages to prevent further information leakage.
+
+---
+
+*Reported responsibly to improve the security posture of AIxBlock infrastructure.*
